@@ -3,6 +3,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
+const bodyParser = require('body-parser')
 const Cards = require('./dbCards.js')
 
 //App config
@@ -13,7 +14,9 @@ const connection_url = process.env.CONNECTION_URL
 
 // Middlewares
 app.use(cors())
-app.use(express.json())
+// app.use(express.json())
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // DB config
 mongoose.connect(connection_url, {
