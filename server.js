@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const Cards = require('./models/dbCards.js')
 const dbCardsRouter = require('./routes/dbCards')
+const userRouter = require('./routes/users')
 
 //App config
 const app = express()
@@ -25,6 +26,7 @@ mongoose.connect(connection_url, {
 app.get('/', (req, res) => res.status(200).send("Hello"))
 
 app.use('/cards', dbCardsRouter)
+app.use('/user', userRouter)
 
 // Listener
 app.listen(port, () => console.log(`Listening on port: ${port}`))
