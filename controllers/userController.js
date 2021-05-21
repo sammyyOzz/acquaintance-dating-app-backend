@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 
 const signup = async (req, res) => {
-    const { username, email, password, confirmPassword } = req.body
+    const { name, email, password, confirmPassword } = req.body
 
     try {
         const existingUser = await User.findOne({ email })
@@ -15,8 +15,9 @@ const signup = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 12)
 
         const result = await User.create({
-            username,
+            name,
             email,
+            imgUrl: '',
             password: hashedPassword
         })
 
@@ -27,6 +28,7 @@ const signup = async (req, res) => {
         res.status(200).json({ result, token })
 
     } catch (error) {
+        console.log(error)
         return res.status(500).json({ message: "something went wrong"})
     }
 }
