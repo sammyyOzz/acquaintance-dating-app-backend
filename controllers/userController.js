@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
+const Profile = require('../models/profile')
 
 const signup = async (req, res) => {
     const { name, email, password, confirmPassword } = req.body
@@ -17,15 +18,33 @@ const signup = async (req, res) => {
         const result = await User.create({
             name,
             email,
-            imgUrl: '',
+            imageUrl: '',
             password: hashedPassword
+        })
+
+        /**
+         * create profile for each user upon registration
+         */
+        const profile = await Profile.create({
+            name: result.name,
+            gender: '',
+            age: '',
+            favColour: '',
+            favFood: '',
+            favMusic: '',
+            favSport: '',
+            sexuality: '',
+            hobby: '',
+            aboutYourself: 'I am new to dating apps',
+            imageUrl: '',
+            userId: result._id
         })
 
         const token = jwt.sign({ email: result.email, id: result._id },
             'test', // second argument which is a secret text to be stored in .env file
             { expiresIn: "1h" })
 
-        res.status(200).json({ result, token })
+        res.status(201).json({ result, profile, token })
 
     } catch (error) {
         console.log(error)
@@ -55,15 +74,82 @@ const signin = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ message: "something went wrong"})
     }
+}
 
-    // User.findOne({email})
-    //     .then(user => {
-    //         if (! user) return res.json(`User doesn't exist`)
-    //     })
-    //     .catch(err => res.json(err))
+const googleSignIn = async (req, res) => {
+
+    const { googleId, name, imageUrl } = req.body
+
+    try {
+        /**
+         * create profile google users
+         */
+        const googleProfile = await Profile.findOne({userId: googleId})
+
+        if(googleProfile) return res.status(200).json({ message: "Profile exists" })
+        
+        const profile = await Profile.create({
+            name: name,
+            gender: '',
+            age: '',
+            favColour: '',
+            favFood: '',
+            favMusic: '',
+            favSport: '',
+            sexuality: '',
+            hobby: '',
+            aboutYourself: 'I am new to dating apps',
+            imageUrl: imageUrl,
+            userId: googleId
+        })
+
+        return res.status(201).json({ message: "Profile created", profile: profile})
+    
+    } catch (error) {
+        
+    }
+}
+
+const getUsers = async (req, res) => {
+
+    try {
+        const users = await User.find()
+
+        res.status(200).send(users)
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const updateUser = async (req, res) => {
+
+    try {
+        const id = req.params.id
+        const newDetails = req.body
+        const showUpdates = { new: true }
+
+        if (req.userId !== id) {
+            throw res.status(401).json({ 
+                message: "You do not have permission to change another user's details"
+            })
+        }
+
+        const updatedUser  = await User.findByIdAndUpdate(id, newDetails, showUpdates)
+
+        // const updatedUser = await User.findOneAndUpdate({"_id": req.params.id}, {$set: { name: newDetails.name, imgUrl: newDetails.imgUrl}}, showUpdates )
+
+        res.status(200).json(updatedUser)
+
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 module.exports = {
     signup: signup,
-    signin: signin
+    signin: signin,
+    googleSignIn: googleSignIn,
+    getUsers: getUsers,
+    updateUser: updateUser,
 }
