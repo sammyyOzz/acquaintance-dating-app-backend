@@ -1,4 +1,6 @@
 const Profile = require('../models/profile')
+const fs = require('fs')
+const path = require('path');
 
 const getProfiles = async (req, res) => {
 
@@ -34,7 +36,7 @@ const updateProfile = async (req, res) => {
     try {
         const id = req.params.id
         const newDetails = req.body
-        const showUpdates = { new: true }
+        const showUpdates = { new: false }
 
         if (req.file) {
             newDetails.imageUrl = req.file.filename
@@ -46,9 +48,17 @@ const updateProfile = async (req, res) => {
             })
         }
 
-        const updatedProfile = await Profile.findOneAndUpdate({"userId": id}, newDetails, showUpdates )
+        const profileBeforeUpdate = await Profile.findOneAndUpdate({"userId": id}, newDetails, showUpdates)
 
-        res.status(200).json(updatedProfile)
+        if(req.file && profileBeforeUpdate.imageUrl !== "noImageAvatar.png") {
+            const oldImagePath = path.join(__dirname, "..", "images", profileBeforeUpdate.imageUrl)    
+            
+            if(fs.existsSync(oldImagePath)) {
+                fs.unlinkSync(oldImagePath)
+            }
+        }
+
+        res.status(200).json({ message: 'Updated successfully' })
 
     } catch (error) {
         console.log(error)

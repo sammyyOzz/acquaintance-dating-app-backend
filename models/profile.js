@@ -13,7 +13,7 @@ const profileSchema = new Schema({
     sexuality: String,
     hobby: String,
     aboutYourself: String,
-    imageUrl: String,
+    imageUrl: { type: String, default: "noImageAvatar.png" },
     likes: {
         type: [String],
         default: []

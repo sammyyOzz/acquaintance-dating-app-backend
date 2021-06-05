@@ -36,7 +36,6 @@ const signup = async (req, res) => {
             sexuality: '',
             hobby: '',
             aboutYourself: 'I am new to dating apps',
-            imageUrl: '',
             userId: result._id
         })
 
@@ -84,7 +83,7 @@ const googleSignIn = async (req, res) => {
         /**
          * create profile google users
          */
-        const googleProfile = await Profile.findOne({userId: googleId})
+        const googleProfile = await Profile.findOne({ userId: googleId })
 
         if(googleProfile) return res.status(200).json({ message: "Profile exists" })
         
