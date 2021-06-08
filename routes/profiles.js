@@ -1,11 +1,11 @@
 const router = require('express').Router();
-const profileController = require('../controllers/profileController')
+const { getProfiles, showProfile, updateProfile, likeProfile } = require('../controllers/profileController')
 const auth = require('../middleware/auth')
 const imageUpload = require('../middleware/imageUpload');
 
-
-router.get('/getprofiles', profileController.getProfiles)
-router.get('/:id', profileController.showProfile)
-router.patch('/updateprofile/:id', auth, imageUpload, profileController.updateProfile)
+router.get('/getprofiles', getProfiles)
+router.get('/:id', showProfile)
+router.patch('/:id/updateprofile', auth, imageUpload, updateProfile)
+router.patch('/:id/likeprofile', auth, likeProfile)
 
 module.exports = router

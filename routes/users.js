@@ -1,11 +1,11 @@
 const router = require('express').Router();
-const userController = require('../controllers/userController')
+const { signup, signin, googleSignIn, getUsers, updateUser } = require('../controllers/userController')
 const auth = require('../middleware/auth')
 
-router.post('/signup', userController.signup)
-router.post('/signin', userController.signin)
-router.post('/googlesignin', userController.googleSignIn)
-router.get('/getusers', userController.getUsers)
-router.patch('/updateuser/:id', auth, userController.updateUser)
+router.post('/signup', signup)
+router.post('/signin', signin)
+router.post('/googlesignin', googleSignIn)
+router.get('/getusers', getUsers)
+router.patch('/updateuser/:id', auth, updateUser)
 
 module.exports = router
