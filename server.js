@@ -1,9 +1,9 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
-const dbCardsRouter = require('./routes/dbCards')
 const userRouter = require('./routes/users')
 const profileRouter = require('./routes/profiles')
+const messageRouter = require('./routes/messages')
 
 //App config
 const app = express()
@@ -27,9 +27,9 @@ mongoose.connect(connection_url, {
 // API endpoints
 app.get('/', (req, res) => res.status(200).send("Hello"))
 
-app.use('/cards', dbCardsRouter)
 app.use('/user', userRouter)
 app.use('/profile', profileRouter)
+app.use('/message', messageRouter)
 
 // Listener
 app.listen(port, () => console.log(`Listening on port: ${port}`))

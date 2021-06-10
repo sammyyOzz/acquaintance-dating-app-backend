@@ -18,6 +18,10 @@ const profileSchema = new Schema({
         type: [String],
         default: []
     },
+    conversations: {
+        type: [String],
+        default: []
+    },
     userId: {type: String, required: true}
 }, {
     timestamps: true,

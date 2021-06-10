@@ -16,16 +16,17 @@ const getProfiles = async (req, res) => {
 
 const showProfile = async (req, res) => {
 
-    const userId = req.params.id
+    const { id } = req.params
 
     try {
-        const profile = await Profile.findOne({ userId: userId })
+        const profile = await Profile.findOne({ userId: id })
 
         if (profile) {
             return res.status(200).json({ result: profile })
         } else {
             return res.status(400).json({ message: "profile not found"})
         }
+
     } catch (error) {
         res.status(500).json({ message: error })
     }
